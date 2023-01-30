@@ -22,6 +22,7 @@ Currently supports OTP `OTP-23.3` -> `OTP-25.x`
 * Elixir/Erlang installed on your host machine (I recommend using `asdf`).
 * Ncurses `tic` in your path from version 6.2 or later (Set this path using the `TIC_PATH` env variable).
 * (MacOS-Only) GNU version of `sed`, `make`, and `binutils` in your `PATH`.
+* The standard requirements for building erlang: `automake`, `autoconf`, `openssl`
 
 ## Getting Started
 
@@ -61,7 +62,13 @@ etc.
 ### Build a single release
 
 Navigate into one of the bottom-most directories that matches the OS, CPU and libc you want to build for.
+
+
 Ex. `./build/OTP-25.0/linux/aarch64/`
+
+For MacOS targets run: `scripts/do-build-in-dir-darwin.sh`
+
+For Linux targets run: `scripts/do-build-in-dir-linux.sh`
 
 ### Building ALL the releases
 
