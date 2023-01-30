@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>BEAM Machine</title>
+    <style>
+        /* Box sizing rules */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: aliceblue;
+        }
+
+        .tooltip {
+            visibility: hidden;
+            position: absolute;
+        }
+
+        .has-tooltip:hover .tooltip {
+            visibility: visible;
+            z-index: 100;
+        }
+
+        /* Remove default margin */
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        p,
+        figure,
+        blockquote,
+        dl,
+        dd {
+            margin: 0;
+        }
+
+        /* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+        ul[role='list'],
+        ol[role='list'] {
+            list-style: none;
+        }
+
+        /* Set core root defaults */
+        html:focus-within {
+            scroll-behavior: smooth;
+        }
+
+        /* Set core body defaults */
+        body {
+            min-height: 100vh;
+            text-rendering: optimizeSpeed;
+            line-height: 1.5;
+        }
+
+        /* A elements that don't have a class get default styles */
+        a:not([class]) {
+            text-decoration-skip-ink: auto;
+        }
+
+        /* Make images easier to work with */
+        img,
+        picture {
+            max-width: 100%;
+            display: block;
+        }
+
+        /* Inherit fonts for inputs and buttons */
+        input,
+        button,
+        textarea,
+        select {
+            font: inherit;
+        }
+
+        /* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
+        @media (prefers-reduced-motion: reduce) {
+            html:focus-within {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        input[type="radio"] {
+            margin-left: 0.5px;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"
+        integrity="sha512-BrvVYNhKh6yST24E5DY/LopLO5d+8KYmIXyrpBIJ2PK+CyyJw/cLSG/BfJomWLC1IblNrmiJWGlrGueKLd/Ekw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body style="overflow-y: hidden">
+    <div class="flex flex-col justify-center mt-16 items-center">
+        <h3 class="text-xl mb-16">The BEAM Machine</h3>
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg max-w-xl">
+            <div class="px-4 py-5 sm:px-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Static ERTS Options</h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">Select configuration you want for your ERTS release,
+                    then click download!</p>
+            </div>
+            <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+                <dl class="sm:divide-y sm:divide-gray-200">
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Operating System</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                            <div>
+                                <fieldset>
+                                    <div class="space-y-4 flex items-center sm:space-y-0 sm:space-x-10">
+                                        <div class="flex items-center">
+                                            <input id="os-linux" name="os" type="radio" value="linux" checked
+                                                class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                            <label for="os-linux"
+                                                class="ml-3 block text-sm font-medium text-gray-700">Linux</label>
+                                        </div>
+
+                                        <div class="flex items-center">
+                                            <input id="os-macos" name="os" type="radio" value="darwin"
+                                                class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                            <label for="os-macos"
+                                                class="ml-3 block text-sm font-medium text-gray-700">MacOS</label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Architecture</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                            <fieldset>
+                                <div class="space-y-4 flex items-center sm:space-y-0 sm:space-x-10">
+                                    <div class="flex items-center">
+                                        <input id="cpu-x86_64" name="arch-type" type="radio" checked value="x86_64"
+                                            class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                        <label for="cpu-x86_64"
+                                            class="ml-3 block text-sm font-medium text-gray-700">x86_64</label>
+                                    </div>
+
+                                    <div class="flex items-center">
+                                        <input id="cpu-aarch64" name="arch-type" type="radio" value="aarch64"
+                                            class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                        <label for="cpu-aarch64"
+                                            class="ml-3 block text-sm font-medium text-gray-700">aarch64</label>
+                                    </div>
+
+                                    <div class="flex items-center linux-only">
+                                        <input id="cpu-riscv64" name="arch-type" type="radio" value="riscv64"
+                                            class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                        <label for="cpu-riscv64"
+                                            class="ml-3 block text-sm font-medium text-gray-700">RISC-V 64</label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 linux-only">
+                        <span class="text-sm font-medium text-gray-500">
+                            C Runtime
+                        </span>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                            <fieldset>
+                                <div class="space-y-4 flex items-center sm:space-y-0 sm:space-x-10">
+                                    <div class="flex items-center">
+                                        <input id="libc-gnu" name="libc" type="radio" value="gnu" checked
+                                            class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                        <label for="libc-gnu" class="ml-3 block text-sm font-medium text-gray-700">GNU
+                                            (glibc)</label>
+                                    </div>
+
+                                    <div class="flex items-center">
+                                        <input id="libc-musl" name="libc" value="musl" type="radio"
+                                            class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                        <label for="libc-musl"
+                                            class="ml-3 block text-sm font-medium text-gray-700">Musl</label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <span class="text-sm font-medium text-gray-500">
+                            OpenSSL Version (Static)
+                        </span>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                            <fieldset>
+                                <span
+                                    class="bg-gray-100 text-gray-800 text-xl font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">1.1.1s</span>
+                            </fieldset>
+                        </dd>
+                    </div>
+                    <div class="flex items-center justify-center py-4 sm:py-5 sm:gap-4 sm:px-6">
+                        <select
+                            class="form-select px-3 py-1.5 text-base font-normal text-gray-700 bg-white border border-solid border-gray-300 rounded focus:text-gray-700 focus:bg-white focus:border-blue-600"
+                            name="release" id="release">
+                        </select>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:gap-4 sm:px-6">
+                        <dd class="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2  items-center justify-center ">
+                            <button
+                                class="px-4 py-2 font-semibold text-sm bg-cyan-500 text-white rounded-full shadow-sm"
+                                onclick="onDownloadClicked();">Download</button>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+            <div class="py-4 sm:py-5 sm:gap-4 sm:px-6 justify-items-center text-center">
+                <small>This project was created by Digit (@doawoo) to aid the <a class="underline" target="_blank"
+                        href="https://github.com/burrito-elixir/burrito">Elixir Burrito Project</a>.
+                    These Erlang releases are provided publicly in the hopes that they are useful to you. They come with
+                    no warranty or guarantee of any kind.
+                </small>
+            </div>
+            <div class="py-4 sm:py-5 sm:gap-4 sm:px-6 justify-items-center text-center">
+                <p>
+                    Bandwidth costs money, and all expenses are from my own pocket. <br /> <b>You are limited to a total
+                        of 10
+                        downloads per IP per day. Please don't abuse this.</b> <br /> If you want to support the
+                    project, feel free to
+                    <a class="underline" target="_blank" href="https://github.com/sponsors/doawoo">sponsor me on
+                        GitHub</a>, I would
+                    really appreciate it.
+                </p>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    const opensslVersion = "1.1.1s";
+    const versionListUrl = "https://burrito-otp.b-cdn.net/versions.list";
+    const windowsUrl = "https://github.com/erlang/otp/releases/download/OTP-{OTP_VERSION}/otp_win64_{OTP_VERSION}.exe";
+    const linuxUrl = "https://burrito-otp.b-cdn.net/OTP-{OTP_VERSION}/linux/{ARCH}/gnu/otp_{OTP_VERSION}_linux_{LIBC}_{ARCH}_ssl_{OPENSSL_VERSION}.tar.gz";
+    const macUrl = "https://burrito-otp.b-cdn.net/OTP-{OTP_VERSION}/darwin/{ARCH}/otp_{OTP_VERSION}_darwin_{ARCH}_ssl_{OPENSSL_VERSION}.tar.gz";
+
+    const PLEASE_DONT_ABUSE_THIS_BANDWIDTH_COSTS_MONEY_CONSIDER_SPONSORING = "?please-respect-my-bandwidth-costs=thank-you";
+
+    function populateVersionList() {
+
+    }
+
+    function doDownload(otpVersion, os, arch, libc, opensslVersion) {
+        let finalUrl = "";
+
+        switch (os) {
+            case "linux":
+                finalUrl += linuxUrl;
+                finalUrl += PLEASE_DONT_ABUSE_THIS_BANDWIDTH_COSTS_MONEY_CONSIDER_SPONSORING;
+                break;
+            case "darwin":
+                finalUrl += macUrl;
+                finalUrl += PLEASE_DONT_ABUSE_THIS_BANDWIDTH_COSTS_MONEY_CONSIDER_SPONSORING;
+                break;
+            case "windows":
+                alert("How did you get here?");
+                break;
+        }
+
+        debugger;
+
+        const reqUrl = finalUrl
+            .replaceAll("{OTP_VERSION}", otpVersion)
+            .replaceAll("{LIBC}", libc)
+            .replaceAll("{ARCH}", arch)
+            .replaceAll("{OPENSSL_VERSION}", opensslVersion)
+
+        console.log(`Download URL: ${finalUrl}`);
+        window.open(reqUrl);
+    }
+
+    function onDownloadClicked() {
+        const otpVersion = $('#release').val();
+        const os = $("input[name='os']:checked").val();
+        const arch = $("input[name='arch-type']:checked").val();
+        const libc = $("input[name='libc']:checked").val();
+
+        console.log(`Downloading: ${otpVersion} | ${os} | ${arch} | ${libc}`);
+        doDownload(otpVersion, os, arch, libc, opensslVersion);
+    }
+
+    function getVersionList() {
+        $.get(versionListUrl + PLEASE_DONT_ABUSE_THIS_BANDWIDTH_COSTS_MONEY_CONSIDER_SPONSORING, function (data) {
+            const list = data.split("\n").reverse();
+            list.forEach(element => {
+                if (element != "") {
+                    $("#release").append($("<option/>", {
+                        value: element.replace("OTP-", ""),
+                        text: element
+                    }));
+                }
+            });
+        });
+    }
+
+    $(() => {
+        getVersionList();
+        $("input[name='os']").on("click", (event) => {
+            if (event.target.value == "linux") {
+                $(".linux-only").show();
+            }
+
+            if (event.target.value == "darwin") {
+                $(".linux-only").hide();
+                if ($("input[name='arch-type']:checked").val() == "riscv64") {
+                    $("input[name='arch-type']")[0.].click()
+                }
+            }
+        });
+    });
+</script>
+
+</html>
