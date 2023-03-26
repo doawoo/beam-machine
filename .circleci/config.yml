@@ -10,9 +10,17 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build all OTP releases
+          name: Prep Env
           command: |
-            echo $(ls $CIRCLE_WORKING_DIRECTORY)
+            echo "export PATH=/opt/homebrew/bin:$PATH" >> $BASH_ENV
+            echo "export PATH=/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH" >> $BASH_ENV
+            echo "export PATH=/opt/homebrew/opt/make/libexec/gnubin:$PATH" >> $BASH_ENV
+            echo "export PATH=/usr/local/opt/binutils/bin:$PATH" >> $BASH_ENV
+            echo "export TIC_PATH=/Users/digit/src/ncurses-6.3/progs/tic" >> $BASH_ENV
+            ulimit -Sn unlimited && ulimit -Sl unlimited
+      - run:
+          name: Build ERTS Releases
+          command: |
             cd /Volumes/ERL_USB/build
             $CIRCLE_WORKING_DIRECTORY/scripts/get-erlang-releases.sh | $CIRCLE_WORKING_DIRECTORY/scripts/create-release-directories.sh
             $CIRCLE_WORKING_DIRECTORY/scripts/the-big-build.sh
