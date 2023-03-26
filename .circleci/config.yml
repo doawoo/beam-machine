@@ -8,6 +8,7 @@ jobs:
     machine: true
     resource_class: doawoo/m1_mac
     steps:
+      - checkout
       - run:
           name: Build all OTP releases
           command: |
