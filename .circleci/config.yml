@@ -1,0 +1,18 @@
+version: 2.1
+workflows:
+  testing:
+    jobs:
+      - runner-test
+jobs:
+  runner-test:
+    machine: true
+    resource_class: doawoo/m1_mac
+    steps:
+      - run:
+          name: Build all OTP releases
+          command: |
+            export PATH=$PATH:$(pwd)/scripts
+            cd /Volumes/ERL_USB/build
+            get-erlang-releases.sh | create-release-directories.sh
+            the-big-build.sh
+
