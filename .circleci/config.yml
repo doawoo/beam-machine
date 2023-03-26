@@ -1,0 +1,24 @@
+version: 2.1
+workflows:
+  build:
+    jobs:
+      - build_otp:
+          filters:
+            branches:
+              only:
+                - main
+jobs:
+  build_otp:
+    machine: true
+    resource_class: doawoo/m1_mac
+    steps:
+      - checkout
+      - run:
+          name: Build ERTS Releases
+          command: |
+            echo $PATH
+            ulimit -Sn unlimited && ulimit -Sl unlimited
+            cd /Volumes/ERL_USB/build
+            $CIRCLE_WORKING_DIRECTORY/scripts/get-erlang-releases.sh | $CIRCLE_WORKING_DIRECTORY/scripts/create-release-directories.sh
+            $CIRCLE_WORKING_DIRECTORY/scripts/the-big-build.sh
+
