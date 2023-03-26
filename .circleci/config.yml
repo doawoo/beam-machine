@@ -2,7 +2,11 @@ version: 2.1
 workflows:
   build:
     jobs:
-      - build_otp
+      - build_otp:
+          filters:
+            branches:
+              only:
+                - main
 jobs:
   build_otp:
     machine: true
