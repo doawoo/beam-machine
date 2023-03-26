@@ -11,6 +11,7 @@ jobs:
       - run:
           name: Build all OTP releases
           command: |
+            ls $CIRCLE_WORKING_DIRECTORY
             cd /Volumes/ERL_USB/build
             $CIRCLE_WORKING_DIRECTORY/scripts/get-erlang-releases.sh | $CIRCLE_WORKING_DIRECTORY/scripts/create-release-directories.sh
             $CIRCLE_WORKING_DIRECTORY/scripts/the-big-build.sh
