@@ -21,6 +21,7 @@ jobs:
       - run:
           name: Build ERTS Releases
           command: |
+            source $BASH_ENV
             cd /Volumes/ERL_USB/build
             $CIRCLE_WORKING_DIRECTORY/scripts/get-erlang-releases.sh | $CIRCLE_WORKING_DIRECTORY/scripts/create-release-directories.sh
             $CIRCLE_WORKING_DIRECTORY/scripts/the-big-build.sh
