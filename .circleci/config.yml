@@ -16,7 +16,6 @@ jobs:
       - run:
           name: Build ERTS Releases
           command: |
-            echo $PATH
             ulimit -Sn unlimited && ulimit -Sl unlimited
             cd /Volumes/ERL_USB/build
             $CIRCLE_WORKING_DIRECTORY/scripts/get-erlang-releases.sh | $CIRCLE_WORKING_DIRECTORY/scripts/create-release-directories.sh
