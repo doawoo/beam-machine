@@ -11,7 +11,6 @@ Mix.install([{:tesla, "~> 1.4"}, {:jason, "~> 1.3"}])
 
 script_version = "0.2.0"
 default_openssl_version = "1.1.1s"
-default_ncurses_version = "6.3"
 
 usage = """
   mkerlang v#{script_version} - build a static Erlang release tar archive (Usually for use in Burrito)
@@ -22,7 +21,6 @@ usage = """
     --os=[linux, darwin] (The OS Erlang is being built for)
     --abi=[gnu, musl] (The ABI of the target system, ignored if building for MacOS)
     --openssl-version=[x.y.z(w)] (OpenSSL version to statically link into the release, defaults to #{default_openssl_version})
-    --ncurses-version=[x.y.z] (NCurses version to statically link into the release, defaults to #{default_ncurses_version})
 """
 
 options = [
@@ -31,7 +29,6 @@ options = [
   os: :string,
   abi: :string,
   openssl_version: :string,
-  ncurses_version: :string,
   toolchain_dir: :string
 ]
 
@@ -65,14 +62,6 @@ defmodule ScriptUtils do
 
   def openssl_target(:darwin, :x86_64), do: "darwin64-x86_64-cc"
   def openssl_target(:darwin, :aarch64), do: "darwin64-arm64-cc"
-
-  def ncurses_target(:linux, :x86_64), do: "x86_64-linux"
-  def ncurses_target(:linux, :aarch64), do: "aarch64-linux"
-  def ncurses_target(:linux, :riscv64), do: "riscv64-linux"
-  def ncurses_target(:linux, :mipsel), do: "linux-mips32"
-
-  def ncurses_target(:darwin, :x86_64), do: "x86_64-macos"
-  def ncurses_target(:darwin, :aarch64), do: "aarch64-macos"
 
   def clang_target(:x86_64), do: "x86_64-apple-macos11"
   def clang_target(:aarch64), do: "arm64-apple-macos11"
@@ -247,7 +236,6 @@ end
 
 target_erlang_version = Keyword.get(args, :otp_version)
 target_openssl_version = Keyword.get(args, :openssl_version, default_openssl_version)
-target_ncurses_version = Keyword.get(args, :ncurses_version, default_ncurses_version)
 
 toolchain_override_dir = cond do
   Keyword.get(args, :toolchain_dir) != nil -> Keyword.get(args, :toolchain_dir)
@@ -282,7 +270,6 @@ IO.puts("----------")
 
 IO.puts("Target Erlang Version: #{target_erlang_version}")
 IO.puts("Target OpenSSL Version: #{target_openssl_version}")
-IO.puts("Target NCurses Version: #{target_ncurses_version}")
 IO.puts("----------")
 
 #### Fetching
@@ -292,13 +279,6 @@ IO.puts("-> Fetch & Extract: OpenSSL...")
 ScriptUtils.fetch_and_extract(
   "https://www.openssl.org/source",
   "openssl-#{target_openssl_version}.tar.gz"
-)
-
-IO.puts("-> Fetch & Extract: NCurses...")
-
-ScriptUtils.fetch_and_extract(
-  "https://ftp.gnu.org/pub/gnu/ncurses",
-  "ncurses-#{target_ncurses_version}.tar.gz"
 )
 
 IO.puts("-> Fetch & Extract: Erlang...")
@@ -341,14 +321,6 @@ ScriptUtils.exec_command_in_cwd(
   result.compiler_env
 )
 
-IO.puts("-> Build: NCurses...")
-Path.join(temp_workdir, "ncurses-#{target_ncurses_version}") |> File.cd!()
-
-ScriptUtils.exec_command_in_cwd(
-  "./configure --host=#{ScriptUtils.ncurses_target(target_os, target_arch)} --with-normal --without-shared --prefix=#{result.sysroot_path} && make -j && make install",
-  result.compiler_env
-)
-
 File.cd!(temp_workdir)
 
 if target_os == :linux do
@@ -372,7 +344,7 @@ if target_os == :linux do
   Path.join(temp_workdir, "otp_src_#{target_erlang_version}") |> File.cd!()
 
   ScriptUtils.exec_command_in_cwd(
-    "./configure --enable-bootstrap-only --without-javac --without-jinterface --without-wx && make -j",
+    "./configure --enable-bootstrap-only --without-termcap --without-javac --without-jinterface --without-wx && make -j",
     []
   )
 
@@ -387,14 +359,14 @@ else
   Path.join(temp_workdir, "otp_src_#{target_erlang_version}") |> File.cd!()
 
   ScriptUtils.exec_command_in_cwd(
-    "./configure --enable-bootstrap-only --without-javac --without-jinterface --without-wx && make -j",
+    "./configure --enable-bootstrap-only --without-termcap --without-javac --without-jinterface --without-wx && make -j",
     [{"RANLIB", "/usr/bin/ranlib"}, {"AR", "/usr/bin/ar"}]
   )
 
   IO.puts("--> Compile Erlang...")
 
   erlang_configure_flags =
-    "--disable-parallel-configure --without-javac --without-jinterface --disable-dynamic-ssl-lib --without-wx --with-ssl='#{result.sysroot_path}'"
+    "--disable-parallel-configure --without-javac --without-termcap --without-jinterface --disable-dynamic-ssl-lib --without-wx --with-ssl='#{result.sysroot_path}'"
 
   erlang_env = [
     {"erl_xcomp_sysroot", result.sysroot_path},
@@ -402,9 +374,9 @@ else
     {"CXX", "clang++ -target #{ScriptUtils.clang_target(target_arch)}"},
     {"LDFLAGS", "-L#{result.sysroot_path}/lib"},
     {"CFLAGS",
-     "-O2 -g -L#{result.sysroot_path}/lib -I#{result.sysroot_path}/include -I#{result.sysroot_path}/include/ncurses"},
+     "-O2 -g -L#{result.sysroot_path}/lib -I#{result.sysroot_path}/include"},
     {"CXXFLAGS",
-     "-O2 -g -L#{result.sysroot_path}/lib -I#{result.sysroot_path}/include -I#{result.sysroot_path}/include/ncurses"},
+     "-O2 -g -L#{result.sysroot_path}/lib -I#{result.sysroot_path}/include"},
     {"RANLIB", "/usr/bin/ranlib"},
     {"AR", "/usr/bin/ar"}
   ]
