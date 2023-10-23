@@ -1,0 +1,8 @@
+kind: pipeline
+name: BeamMachine
+
+steps:
+- name: test step
+  image: docker.io/alpine:latest
+  commands:
+  - echo hello world
