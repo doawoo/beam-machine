@@ -104,8 +104,8 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
-<body style="overflow-y: hidden">
-    <div class="flex flex-col justify-center mt-16 items-center">
+<body>
+    <div class="flex flex-col justify-center mt-16 items-center mb-10">
         <h3 class="text-xl mb-16">The BEAM Machine</h3>
         <div class="bg-white shadow overflow-hidden sm:rounded-lg max-w-xl">
             <div class="px-4 py-5 sm:px-6">
@@ -139,7 +139,7 @@
                             </div>
                         </dd>
                     </div>
-                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 linux-only">
                         <dt class="text-sm font-medium text-gray-500">Architecture</dt>
                         <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <fieldset>
@@ -157,13 +157,6 @@
                                         <label for="cpu-aarch64"
                                             class="ml-3 block text-sm font-medium text-gray-700">aarch64</label>
                                     </div>
-
-                                    <div class="flex items-center linux-only">
-                                        <input id="cpu-riscv64" name="arch-type" type="radio" value="riscv64"
-                                            class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
-                                        <label for="cpu-riscv64"
-                                            class="ml-3 block text-sm font-medium text-gray-700">RISC-V 64</label>
-                                    </div>
                                 </div>
                             </fieldset>
                         </dd>
@@ -174,20 +167,15 @@
                         </span>
                         <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <fieldset>
-                                <div class="space-y-4 flex items-center sm:space-y-0 sm:space-x-10">
-                                    <div class="flex items-center">
-                                        <input id="libc-gnu" name="libc" type="radio" value="gnu" checked
-                                            class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
-                                        <label for="libc-gnu" class="ml-3 block text-sm font-medium text-gray-700">GNU
-                                            (glibc)</label>
-                                    </div>
-
-                                    <div class="flex items-center">
-                                        <input id="libc-musl" name="libc" value="musl" type="radio"
-                                            class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
-                                        <label for="libc-musl"
-                                            class="ml-3 block text-sm font-medium text-gray-700">Musl</label>
-                                    </div>
+                                <div>
+                                    <p><span class="font-semibold underline">WARNING!</span> These are Linux "Universal" Erlang/OTP builds that are intended for use with <a class="underline" href="https://github.com/burrito-elixir/burrito">Burrito</a>.</p>
+                                    <br/>
+                                    <p>They <span class="font-semibold">require</span> that you have one of the following Musl LibC runtime shared object file placed inside <span class="font-semibold">/tmp.</span> This makes them independent from the glibc version on your machine.</p>
+                                    <br/>
+                                    <a class="underline" href="https://beam-machine-universal.b-cdn.net/musl/libc-musl-17613ec13d9aa9e5e907e6750785c5bbed3ad49472ec12281f592e2f0f2d3dbd.so?please-respect-my-bandwidth-costs=thank-you">Download Runtime (Linux x86_64)</a>
+                                    <br/>
+                                    <br/>
+                                    <a class="underline" href="https://beam-machine-universal.b-cdn.net/musl/libc-musl-939d11dcd3b174a8dee05047f2ae794c5c43af54720c352fa946cd8b0114627a.so?please-respect-my-bandwidth-costs=thank-you">Download Runtime (Linux aarch64)</a>
                                 </div>
                             </fieldset>
                         </dd>
@@ -199,7 +187,7 @@
                         <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <fieldset>
                                 <span
-                                    class="bg-gray-100 text-gray-800 text-xl font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">1.1.1s</span>
+                                    class="bg-gray-100 text-gray-800 text-xl font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">3.1.4</span>
                             </fieldset>
                         </dd>
                     </div>
@@ -225,7 +213,7 @@
                     no warranty or guarantee of any kind.
                 </small>
             </div>
-            <div class="py-4 sm:py-5 sm:gap-4 sm:px-6 justify-items-center text-center">
+            <div class="py-4 sm:py-5 sm:gap-4 sm:px-6 justify-items-center text-center m-5">
                 <p>
                     Bandwidth costs money, and all expenses are from my own pocket. <br /> <b>You are limited to 5 simultaneous downloads per IP address. Please don't abuse this.</b> <br /> If you want to support the
                     project, feel free to
@@ -240,11 +228,14 @@
 </body>
 
 <script>
-    const opensslVersion = "1.1.1s";
-    const versionListUrl = "https://burrito-otp.b-cdn.net/versions.list";
+    const opensslVersion = "3.1.4";
+    const versionListUrl = "https://beam-machine-universal.b-cdn.net/versions.list";
     const windowsUrl = "https://github.com/erlang/otp/releases/download/OTP-{OTP_VERSION}/otp_win64_{OTP_VERSION}.exe";
-    const linuxUrl = "https://burrito-otp.b-cdn.net/OTP-{OTP_VERSION}/linux/{ARCH}/{LIBC}/otp_{OTP_VERSION}_linux_{LIBC}_{ARCH}_ssl_{OPENSSL_VERSION}.tar.gz";
-    const macUrl = "https://burrito-otp.b-cdn.net/OTP-{OTP_VERSION}/darwin/{ARCH}/otp_{OTP_VERSION}_darwin_{ARCH}_ssl_{OPENSSL_VERSION}.tar.gz";
+    const linuxUrl = "https://beam-machine-universal.b-cdn.net/OTP-{OTP_VERSION}/linux/{ARCH}/any/otp_{OTP_VERSION}_linux_any_{ARCH}_ssl_{OPENSSL_VERSION}.tar.gz";
+    const macUrl = "https://beam-machine-universal.b-cdn.net/OTP-{OTP_VERSION}/macos/universal/otp_{OTP_VERSION}_macos_universal_ssl_{OPENSSL_VERSION}.tar.gz";
+
+    const LINUX_MUSL_AARCH64 = "https://beam-machine-universal.b-cdn.net/musl/libc-musl-939d11dcd3b174a8dee05047f2ae794c5c43af54720c352fa946cd8b0114627a.so";
+    const LINUX_MUSL_X86_64 = "https://beam-machine-universal.b-cdn.net/musl/libc-musl-17613ec13d9aa9e5e907e6750785c5bbed3ad49472ec12281f592e2f0f2d3dbd.so";
 
     const PLEASE_DONT_ABUSE_THIS_BANDWIDTH_COSTS_MONEY_CONSIDER_SPONSORING = "?please-respect-my-bandwidth-costs=thank-you";
 
@@ -252,7 +243,7 @@
 
     }
 
-    function doDownload(otpVersion, os, arch, libc, opensslVersion) {
+    function doDownload(otpVersion, os, arch, opensslVersion) {
         let finalUrl = "";
 
         switch (os) {
@@ -269,11 +260,8 @@
                 break;
         }
 
-        debugger;
-
         const reqUrl = finalUrl
             .replaceAll("{OTP_VERSION}", otpVersion)
-            .replaceAll("{LIBC}", libc)
             .replaceAll("{ARCH}", arch)
             .replaceAll("{OPENSSL_VERSION}", opensslVersion)
 
@@ -285,15 +273,14 @@
         const otpVersion = $('#release').val();
         const os = $("input[name='os']:checked").val();
         const arch = $("input[name='arch-type']:checked").val();
-        const libc = $("input[name='libc']:checked").val();
 
-        console.log(`Downloading: ${otpVersion} | ${os} | ${arch} | ${libc}`);
-        doDownload(otpVersion, os, arch, libc, opensslVersion);
+        console.log(`Downloading: ${otpVersion} | ${os} | ${arch}`);
+        doDownload(otpVersion, os, arch, opensslVersion);
     }
 
     function getVersionList() {
         $.get(versionListUrl + PLEASE_DONT_ABUSE_THIS_BANDWIDTH_COSTS_MONEY_CONSIDER_SPONSORING, function (data) {
-            const list = data.split("\n").reverse();
+            const list = data.split("\n");
             list.forEach(element => {
                 if (element != "") {
                     $("#release").append($("<option/>", {
@@ -314,9 +301,6 @@
 
             if (event.target.value == "darwin") {
                 $(".linux-only").hide();
-                if ($("input[name='arch-type']:checked").val() == "riscv64") {
-                    $("input[name='arch-type']")[0.].click()
-                }
             }
         });
     });
