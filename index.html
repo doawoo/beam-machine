@@ -168,14 +168,23 @@
                         <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <fieldset>
                                 <div>
-                                    <p><span class="font-semibold underline">WARNING!</span> These are Linux "Universal" Erlang/OTP builds that are intended for use with <a class="underline" href="https://github.com/burrito-elixir/burrito">Burrito</a>.</p>
-                                    <br/>
-                                    <p>They <span class="font-semibold">require</span> that you have one of the following Musl LibC runtime shared object file placed inside <span class="font-semibold">/tmp.</span> This makes them independent from the glibc version on your machine.</p>
-                                    <br/>
-                                    <a class="underline" href="https://beam-machine-universal.b-cdn.net/musl/libc-musl-17613ec13d9aa9e5e907e6750785c5bbed3ad49472ec12281f592e2f0f2d3dbd.so?please-respect-my-bandwidth-costs=thank-you">Download Runtime (Linux x86_64)</a>
-                                    <br/>
-                                    <br/>
-                                    <a class="underline" href="https://beam-machine-universal.b-cdn.net/musl/libc-musl-939d11dcd3b174a8dee05047f2ae794c5c43af54720c352fa946cd8b0114627a.so?please-respect-my-bandwidth-costs=thank-you">Download Runtime (Linux aarch64)</a>
+                                    <p><span class="font-semibold underline">WARNING!</span> These are Linux "Universal"
+                                        Erlang/OTP builds that are intended for use with <a class="underline"
+                                            href="https://github.com/burrito-elixir/burrito">Burrito</a>.</p>
+                                    <br />
+                                    <p>They <span class="font-semibold">require</span> that you have one of the
+                                        following Musl LibC runtime shared object file placed inside <span
+                                            class="font-semibold">/tmp.</span> This makes them independent from the
+                                        glibc version on your machine.</p>
+                                    <br />
+                                    <a class="underline"
+                                        href="https://beam-machine-universal.b-cdn.net/musl/libc-musl-71c35316aff45bbfd243d8eb9bfc4a58b6eb97cee09514cd2030e145b68107fb.so?please-respect-my-bandwidth-costs=thank-you">Download
+                                        Runtime (Linux x86_64)</a>
+                                    <br />
+                                    <br />
+                                    <a class="underline"
+                                        href="https://beam-machine-universal.b-cdn.net/musl/libc-musl-6b558025200a5ed1308e2ce2675217afec71b6c5a9d561e52262ca948d59905e.so?please-respect-my-bandwidth-costs=thank-you">Download
+                                        Runtime (Linux aarch64)</a>
                                 </div>
                             </fieldset>
                         </dd>
@@ -187,11 +196,16 @@
                         <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <fieldset>
                                 <span
-                                    class="bg-gray-100 text-gray-800 text-xl font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">3.1.4</span>
+                                    class="bg-gray-100 text-gray-800 text-xl font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">3.5.1</span>
                             </fieldset>
                         </dd>
                     </div>
                     <div class="flex items-center justify-center py-4 sm:py-5 sm:gap-4 sm:px-6">
+                        <div id="loader" class="flex flex-col items-center justify-center">
+                            <p>Fetching Release List...</p>
+                            <img src="loading.gif" />
+                        </div>
+
                         <select
                             class="form-select px-3 py-1.5 text-base font-normal text-gray-700 bg-white border border-solid border-gray-300 rounded focus:text-gray-700 focus:bg-white focus:border-blue-600"
                             name="release" id="release">
@@ -215,7 +229,9 @@
             </div>
             <div class="py-4 sm:py-5 sm:gap-4 sm:px-6 justify-items-center text-center m-5">
                 <p>
-                    Bandwidth costs money, and all expenses are from my own pocket. <br /> <b>You are limited to 5 simultaneous downloads per IP address. Please don't abuse this.</b> <br /> If you want to support the
+                    Bandwidth costs money, and all expenses are from my own pocket. <br /> <b>You are limited to 5
+                        simultaneous downloads per IP address. Please don't abuse this.</b> <br /> If you want to
+                    support the
                     project, feel free to
                     <a class="underline" target="_blank" href="https://github.com/sponsors/doawoo">sponsor me on
                         GitHub</a>, I would
@@ -228,11 +244,10 @@
 </body>
 
 <script>
-    const opensslVersion = "3.1.4";
-    const versionListUrl = "https://beam-machine-universal.b-cdn.net/versions.list";
+    const versionListUrl = "https://list-universal-otp-jpd80.bunny.run/";
     const windowsUrl = "https://github.com/erlang/otp/releases/download/OTP-{OTP_VERSION}/otp_win64_{OTP_VERSION}.exe";
-    const linuxUrl = "https://beam-machine-universal.b-cdn.net/OTP-{OTP_VERSION}/linux/{ARCH}/any/otp_{OTP_VERSION}_linux_any_{ARCH}_ssl_{OPENSSL_VERSION}.tar.gz";
-    const macUrl = "https://beam-machine-universal.b-cdn.net/OTP-{OTP_VERSION}/macos/universal/otp_{OTP_VERSION}_macos_universal_ssl_{OPENSSL_VERSION}.tar.gz";
+    const linuxUrl = "https://beam-machine-universal.b-cdn.net/OTP-{OTP_VERSION}/linux/{ARCH}/any/otp_{OTP_VERSION}_linux_any_{ARCH}.tar.gz";
+    const macUrl = "https://beam-machine-universal.b-cdn.net/OTP-{OTP_VERSION}/macos/universal/otp_{OTP_VERSION}_macos_universal.tar.gz";
 
     const LINUX_MUSL_AARCH64 = "https://beam-machine-universal.b-cdn.net/musl/libc-musl-939d11dcd3b174a8dee05047f2ae794c5c43af54720c352fa946cd8b0114627a.so";
     const LINUX_MUSL_X86_64 = "https://beam-machine-universal.b-cdn.net/musl/libc-musl-17613ec13d9aa9e5e907e6750785c5bbed3ad49472ec12281f592e2f0f2d3dbd.so";
@@ -243,7 +258,7 @@
 
     }
 
-    function doDownload(otpVersion, os, arch, opensslVersion) {
+    function doDownload(otpVersion, os, arch) {
         let finalUrl = "";
 
         switch (os) {
@@ -263,7 +278,6 @@
         const reqUrl = finalUrl
             .replaceAll("{OTP_VERSION}", otpVersion)
             .replaceAll("{ARCH}", arch)
-            .replaceAll("{OPENSSL_VERSION}", opensslVersion)
 
         console.log(`Download URL: ${finalUrl}`);
         window.open(reqUrl);
@@ -275,13 +289,14 @@
         const arch = $("input[name='arch-type']:checked").val();
 
         console.log(`Downloading: ${otpVersion} | ${os} | ${arch}`);
-        doDownload(otpVersion, os, arch, opensslVersion);
+        doDownload(otpVersion, os, arch);
     }
 
     function getVersionList() {
+        $("#release").hide();
         $.get(versionListUrl + PLEASE_DONT_ABUSE_THIS_BANDWIDTH_COSTS_MONEY_CONSIDER_SPONSORING, function (data) {
-            const list = data.split("\n");
-            list.forEach(element => {
+            data.reverse();
+            data.forEach(element => {
                 if (element != "") {
                     $("#release").append($("<option/>", {
                         value: element.replace("OTP-", ""),
@@ -289,6 +304,8 @@
                     }));
                 }
             });
+            $("#loader").hide();
+            $("#release").show();
         });
     }
 
