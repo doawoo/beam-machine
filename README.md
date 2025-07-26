@@ -16,4 +16,4 @@ Erlang, OpenSSL, and NCurses totalling into a full static ERTS release. (Excludi
 * Linux (CPUs: x86_64, aarch64) with musl libc and patched `.interp` section.
 * MacOS (CPUs: x86_64, aarch64) fat binaries.
 
-Currently supports OTP `OTP-23.3` and onward.
+Currently supports OTP `OTP-25.0` and onward.
